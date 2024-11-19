@@ -2,7 +2,7 @@
 
 # Wallbit
 
-Esta aplicación es un carrito de compras dirigido a programadores. Permite agregar productos ingresando solo el ID del producto y la cantidad deseada. Cada vez que se añade un artículo, se consulta una API para mostrar la información del producto en una tabla, facilitando el proceso de compra.
+Esta aplicación es un carrito de compras dirigido a programadores. Permite agregar productos ingresando solo el ID del producto y la cantidad deseada. Cada vez que se añade un artículo, se consulta una API para mostrar la información del producto en una tabla, facilitando el proceso de compra. [Demo](https://wallbit-store.netlify.app/)
 
 ## Características
 
@@ -51,7 +51,7 @@ Para ejecutar este proyecto, deberá agregar las siguientes variables de entorno
 
 ## Demo
 
-![Razer Seiren Mini](./assets/demo.png)
+[![Demo Wallbit](./assets/demo.png)](https://wallbit-store.netlify.app/)
 
 ## Tecnologías
 
