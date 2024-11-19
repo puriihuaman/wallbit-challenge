@@ -3,24 +3,27 @@ import AddToCart from "./components/AddToCart";
 import ShoppingCart from "./components/ShoppingCart";
 import { fetchProductById } from "./hooks/fetching";
 import type { IOrder } from "./interfaces/IOrder";
-import type { IProduct } from "./interfaces/IProduct";
-import type { UserAction } from "./interfaces/IUserAction";
+import type { UserAction } from "./interfaces/UserAction";
 import { dateFormat } from "./utils/date-format";
+import type { ErrorType } from "./interfaces/TypeError";
 
 const WALLBIT_STORAGE_NAME: string = import.meta.env.VITE_WALLBIT_STORAGE_NAME;
 
 function App() {
 	const [orders, setOrders] = useState<IOrder[]>(
-		JSON.parse(localStorage.getItem(WALLBIT_STORAGE_NAME)) ?? []
+		JSON.parse(localStorage.getItem(WALLBIT_STORAGE_NAME) ?? "[]")
 	);
 
-	const [product, setProduct] = useState<IProduct | null>(null);
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState(null);
+	const [errors, setErrors] = useState<ErrorType | null>(null);
 
-	const handleAddToCart = async ({ inputProductId, amount }): void => {
+	const handleAddToCart = async (
+		inputProductId: number,
+		amount: number
+	): Promise<void> => {
 		const { data, loading, error } = await fetchProductById(inputProductId);
 		setLoading(loading);
+		setErrors(error);
 
 		if (data) {
 			const newOrder: IOrder = {
@@ -96,7 +99,6 @@ function App() {
 							</p>
 						</div>
 
-						{/* mostrar si no hay productos en el carrito */}
 						{orders.length === 0 && (
 							<div className="p-4 text-gray-600 text-balance text-center">
 								<p>
@@ -106,13 +108,12 @@ function App() {
 							</div>
 						)}
 
-						{/* Mostrar cuando productos en el carrito */}
 						{loading && (
 							<div className="p-4 text-center text-indigo-500">Cargando...</div>
 						)}
-						{error && (
+						{errors && (
 							<div className="p-4 text-center text-rose-500">
-								{error.message}
+								{errors?.message}
 							</div>
 						)}
 

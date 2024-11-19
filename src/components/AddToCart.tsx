@@ -1,13 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 
 type AddToCartProps = {
-	handleAddToCart: ({
-		inputProductId,
-		amount,
-	}: {
-		inputProductId: number;
-		amount: number;
-	}) => void;
+	handleAddToCart: (inputProductId: number, amount: number) => void;
 };
 
 const AddToCart = ({ handleAddToCart }: AddToCartProps) => {
@@ -21,7 +15,7 @@ const AddToCart = ({ handleAddToCart }: AddToCartProps) => {
 			return;
 		}
 
-		handleAddToCart({ inputProductId, amount });
+		handleAddToCart(inputProductId, amount);
 		setAmount(1);
 		setInputProductId(0);
 	};

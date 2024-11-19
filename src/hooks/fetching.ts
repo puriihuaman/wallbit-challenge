@@ -1,8 +1,7 @@
 import type { IProduct } from "../interfaces/IProduct";
+import type { ErrorType } from "../interfaces/TypeError";
 
 const BASE_URL: string = import.meta.env.VITE_BASE_URL;
-
-type ErrorType = Error | null;
 
 interface FetchingResult {
 	data: IProduct | null;

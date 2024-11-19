@@ -1,5 +1,5 @@
 import type { IOrder } from "../interfaces/IOrder";
-import type { UserAction } from "../interfaces/IUserAction";
+import type { UserAction } from "../interfaces/UserAction";
 
 type ShoppingCartProps = {
 	orders: IOrder[];
