@@ -3,6 +3,7 @@ import AddToCart from "./components/AddToCart";
 import ShoppingCart from "./components/ShoppingCart";
 import { fetchProductById } from "./hooks/fetching";
 import type { IOrder } from "./interfaces/IOrder";
+import type { IProduct } from "./interfaces/IProduct";
 import type { UserAction } from "./interfaces/IUserAction";
 import { dateFormat } from "./utils/date-format";
 

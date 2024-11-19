@@ -1,14 +1,20 @@
-import { useState, type ChangeEvent } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 
 type AddToCartProps = {
-	handleAddToCart: ({ inputProductId, amount }) => void;
+	handleAddToCart: ({
+		inputProductId,
+		amount,
+	}: {
+		inputProductId: number;
+		amount: number;
+	}) => void;
 };
 
 const AddToCart = ({ handleAddToCart }: AddToCartProps) => {
 	const [amount, setAmount] = useState<number>(0);
 	const [inputProductId, setInputProductId] = useState<number>(0);
 
-	const handleSubmit = (ev): void => {
+	const handleSubmit = (ev: FormEvent<HTMLFormElement>): void => {
 		ev.preventDefault();
 
 		if (inputProductId <= 0 || amount <= 0) {
@@ -42,7 +48,7 @@ const AddToCart = ({ handleAddToCart }: AddToCartProps) => {
 							min={1}
 							autoFocus
 							onChange={({ target }: ChangeEvent<HTMLInputElement>): void =>
-								setAmount(Number(target.value))
+								setAmount(parseInt(target.value))
 							}
 						/>
 						<label
@@ -65,7 +71,7 @@ const AddToCart = ({ handleAddToCart }: AddToCartProps) => {
 							name="productId"
 							value={inputProductId}
 							onChange={({ target }: ChangeEvent<HTMLInputElement>): void =>
-								setInputProductId(Number(target.value))
+								setInputProductId(parseInt(target.value))
 							}
 						/>
 						<label
