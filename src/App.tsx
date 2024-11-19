@@ -1,64 +1,72 @@
-import { useEffect, useState } from "react";
-import "./App.css";
-import { useFetching } from "./hooks/useFetching";
+import { Suspense, useEffect, useState } from "react";
+import AddToCart from "./components/AddToCart";
+import ShoppingCart from "./components/ShoppingCart";
+import { fetchProductById } from "./hooks/fetching";
 import type { IOrder } from "./interfaces/IOrder";
+import type { UserAction } from "./interfaces/IUserAction";
 import { dateFormat } from "./utils/date-format";
 
-const WALLBIT_STORAGE_NAME = "WALLBIT";
+const WALLBIT_STORAGE_NAME: string = import.meta.env.VITE_WALLBIT_STORAGE_NAME;
 
 function App() {
 	const [orders, setOrders] = useState<IOrder[]>(
 		JSON.parse(localStorage.getItem(WALLBIT_STORAGE_NAME)) ?? []
 	);
-	const [formData, setFormData] = useState({ productId: 1, amount: 0 });
 
-	const { data, loading, error } = useFetching(formData.productId);
+	const [product, setProduct] = useState<IProduct | null>(null);
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(null);
 
-	const handleAddToCart = (ev): void => {
-		ev.preventDefault();
-		if (formData.productId <= 0 || formData.amount <= 0) {
-			return;
+	const handleAddToCart = async ({ inputProductId, amount }): void => {
+		const { data, loading, error } = await fetchProductById(inputProductId);
+		setLoading(loading);
+
+		if (data) {
+			const newOrder: IOrder = {
+				id: data.id,
+				product: data,
+				amount: amount,
+				total: data.price * amount,
+				creation_date: dateFormat(new Date()),
+			};
+
+			increment(newOrder, amount, "ADD");
 		}
+	};
 
-		const newOrder: IOrder = {
-			id: data.id,
-			product: data,
-			amount: formData.amount,
-			total: data.price * formData.amount,
-			creation_date: dateFormat(new Date()),
-		};
+	const increment = (
+		currentOrder: IOrder,
+		amount: number = 1,
+		action: UserAction = "ADD"
+	) => {
+		const updatedOrders = [...orders];
 
-		const updatedOrders: IOrder[] = [...orders];
 		const foundIndex = updatedOrders.findIndex(
-			(order): boolean => order.id === newOrder.id
+			(order): boolean => order.id === currentOrder.id
 		);
 
 		if (foundIndex !== -1) {
-			updatedOrders[foundIndex] = {
-				...updatedOrders[foundIndex],
-				amount: updatedOrders[foundIndex].amount + formData.amount,
-				total:
-					(updatedOrders[foundIndex].amount + newOrder.amount) * data.price,
-			};
+			if (action === "ADD" || action === "INCREMENT") {
+				updatedOrders[foundIndex] = {
+					...updatedOrders[foundIndex],
+					amount: (updatedOrders[foundIndex].amount += amount),
+					total:
+						updatedOrders[foundIndex].amount *
+						updatedOrders[foundIndex].product.price,
+				};
+			} else {
+				updatedOrders[foundIndex] = {
+					...updatedOrders[foundIndex],
+					amount: (updatedOrders[foundIndex].amount -= amount),
+					total:
+						updatedOrders[foundIndex].amount *
+						updatedOrders[foundIndex].product.price,
+				};
+			}
 		} else {
-			updatedOrders.push(newOrder);
+			updatedOrders.push(currentOrder);
 		}
-
 		setOrders(updatedOrders);
-	};
-
-	const calculateOrderTotal = (): number => {
-		return orders.reduce(
-			(amount: number, b: IOrder): number => amount + b.total,
-			0
-		);
-	};
-
-	const getValuesToSearch = ({ target }) => {
-		setFormData((formData) => ({
-			...formData,
-			[target.name]: Number(target.value),
-		}));
 	};
 
 	useEffect(() => {
@@ -67,97 +75,52 @@ function App() {
 
 	return (
 		<>
-			<main>
-				<h1>La tiendita</h1>
+			<Suspense>
+				<main className="min-h-screen p-4 flex flex-col gap-8">
+					<h1 className="container max-w-screen-md mx-auto text-xl font-bold text-gray-800">
+						Wallbit
+					</h1>
 
-				<div>
-					<form action="#" onSubmit={handleAddToCart}>
-						<fieldset>
-							<legend>Agregar los productos al carro de compra</legend>
-
-							<div>
-								<label htmlFor="amount">Cantidad</label>
-								<input
-									type="number"
-									id="amount"
-									name="amount"
-									value={formData.amount}
-									min={0}
-									onChange={getValuesToSearch}
-								/>
-							</div>
-
-							<div>
-								<label htmlFor="productId">ID del Producto</label>
-								<input
-									type="text"
-									id="productId"
-									name="productId"
-									placeholder="ID del Producto"
-									value={formData.productId}
-									onChange={getValuesToSearch}
-								/>
-							</div>
-						</fieldset>
-
-						<button type="submit">Agregar</button>
-					</form>
-				</div>
-
-				<div>
-					<div>
-						<p>
-							Carrito de compra
-							{orders.length > 0 && (
-								<span> - Iniciado {orders[0].creation_date}</span>
-							)}
-						</p>
+					<div className="container max-w-screen-md mx-auto border border-gray-900/10 p-4 rounded-md">
+						<AddToCart handleAddToCart={handleAddToCart} />
 					</div>
 
-					{/* mostrar si no hay productos en el carrito */}
-					{orders.length === 0 && (
-						<div className="">
+					<div className="container max-w-screen-md mx-auto border border-gray-900/10 p-4 rounded-md">
+						<div className="text-center p-4 text-gray-800 font-semibold">
 							<p>
-								No hay productos en el carro aun, prueba agregando arriba con su
-								ID y la cantidad que deseas ingrear
+								Carrito de compra
+								{orders.length > 0 && (
+									<span> - Iniciado {orders[0].creation_date}</span>
+								)}
 							</p>
 						</div>
-					)}
 
-					{/* Mostrar cuando productos en el carrito */}
-					<ul className="flex flex-col gap-4">
-						{loading && <div>Cargando...</div>}
-						{error && <div>{error.message}</div>}
-
-						{orders.map((order: IOrder) => (
-							<li
-								key={order.id}
-								className="flex justify-between items-center gap-4"
-							>
-								<p>x {order.amount}</p>
-								<p>{order.product.title}</p>
-								<p>{order.product.price}</p>
-								<p>{order.total}</p>
+						{/* mostrar si no hay productos en el carrito */}
+						{orders.length === 0 && (
+							<div className="p-4 text-gray-600 text-balance text-center">
 								<p>
-									<img
-										src={order?.product?.image}
-										alt={order?.product?.title}
-										className="block aspect-square w-16 h-16"
-									/>
+									No hay productos en el carro aun, prueba agregando arriba con
+									su ID y la cantidad que deseas ingrear
 								</p>
-							</li>
-						))}
-
-						{/* Mostrar el total de toda la compra */}
-						{orders.length > 0 && (
-							<li>
-								Total de la compra:{" "}
-								<strong>$ {calculateOrderTotal().toFixed(2)}</strong>
-							</li>
+							</div>
 						)}
-					</ul>
-				</div>
-			</main>
+
+						{/* Mostrar cuando productos en el carrito */}
+						{loading && (
+							<div className="p-4 text-center text-indigo-500">Cargando...</div>
+						)}
+						{error && (
+							<div className="p-4 text-center text-rose-500">
+								{error.message}
+							</div>
+						)}
+
+						{orders.length > 0 && (
+							<ShoppingCart orders={orders} handleIncrement={increment} />
+						)}
+					</div>
+				</main>
+			</Suspense>
 		</>
 	);
 }

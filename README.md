@@ -1,67 +1,62 @@
 [![Wallbit](./assets/logo.jpg)](https://wallbit.io/)
 
-> El banco digital para trabajadores remotos.
+# Wallbit
 
-# Wallbit Junior Frontend Challenge
+Esta aplicación es un carrito de compras dirigido a programadores. Permite agregar productos ingresando solo el ID del producto y la cantidad deseada. Cada vez que se añade un artículo, se consulta una API para mostrar la información del producto en una tabla, facilitando el proceso de compra.
 
-Para este desafío, nuestro cliente nos encargó hacer un carrito de compras para programadores. Tiene un formulario con 2 campos: ID del producto y cantidad. Los programadores habitualmente no necesitan saber ni ver que productos comprar, sino que saben por conexiones astrales cual es el ID del producto que quieren y así los agregan a su carrito.
+## Características
 
-Cada vez que se agrega un producto, vamos a obtener el producto desde la API y lo vamos a mostrar en una tabla, junto a la cantidad que el usuario eligió.
+**Registro de producto**: Permite registrar el producto que el programador indicio.  
+**Incrementar y Decrementar cantidad**: Permite aumentar y disminuir la cantidad del producto.  
+**Calcula el total**: Calcula el total del carrito.  
+**Persistencia de datos**: Los pedidos se guardan en el almacenamiento local.
 
-> Solo lo mostramos visualmente por si hay alguien que no sea programador mirando la pantalla.
+## Instalación
 
-La aplicación se vería así:
+Para ejecutar la aplicación localmente, siga estos pasos:
 
-![Sin productos](./assets/app-0.jpg)
+1. Clona el repositorio:
 
-> Inicialmente no hay productos en el carrito
+```bash
+  https://github.com/puriihuaman/wallbit-challenge.git
+```
 
-![Con productos](./assets/app-1.jpg)
+2. Navegue hasta el directorio del proyecto:
 
-> Con productos en el carrito
+```bash
+  cd wallbit-challenge
+```
 
-## Requisitos
+3. Instale las dependencias:
 
-La API que nos dió nuestro cliente es: [Fake Store API](https://fakestoreapi.com/). El cliente nos dijo que su stack de frontend es React, que prefiere el challenge hecho con eso, pero está abierto a cualquier stack que quieras usar.
+```bash
+  pnpm install
+```
 
-- [✅] Podemos agregar productos al carrito.
-- [ ] Manejar errores que nos devuelva la API.
-- [✅] Mostrar una lista con los productos agregados incluyendo `title`, `price` e `image` del producto y la `cantidad` que el usuario agregó.
+4. Inicie el servidor de desarrollo:
 
-## Extras
+```bash
+  pnpm run dev
+```
 
-- [ ] El carrito se persiste al recargar la página.
-- [ ] Mostrar el total de productos agregados.
-- [ ] Mostrar el costo total del carrito.
-- [ ] Mostrar la fecha de creación del carrito.
+5. Abra su navegador y vaya a http://localhost:5173/.
 
-## Bonus
+## Variables de entorno
 
-Para destacar, podés agregar cualquier cosa que se te ocurra que llame la atención. No tiene por qué ser necesariamente en el código, o una dependencia. Puede ser algo visual, un easter egg, una funcionalidad, o bueno, algo en el código.
+Para ejecutar este proyecto, deberá agregar las siguientes variables de entorno a su archivo .env
 
-> [!NOTE]
-> Siempre recordá que lo que agregues debe sumar a la experiencia del usuario y no complicar su navegación. Tenés que pensar que quien va a usar la aplicación no va a haber hablado con vos previamente y aun así debería poder usar la aplicación y obtener la mejor experiencia posible.
+`VITE_BASE_URL`
 
-## Entregables
+`VITE_WALLBIT_STORAGE_NAME`
 
-- [ ] Crear un Pull Request a este repositorio con tu solución.
-- [ ] Reemplazar el `README.md` con instrucciones para correr el proyecto e información relevante para la evaluación.
-- [ ] Incluir el link al deploy de tu aplicación.
+## Demo
 
-## Premio
+![Razer Seiren Mini](./assets/demo.png)
 
-Se va a entregar un premio en vivo durante [mi stream](https://twitch.tv/goncypozzo) el 19 de Noviembre de 2024 a las 19:00hs Argentina (GMT -3) entre todos los que completen el desafío. El premio va a ser un micrófono Razer Seiren Mini.
+## Tecnologías
 
-El ganador va a ser elegido por el chat, la gente de Wallbit y yo.
+React, TypeScript, TailwindCSS
 
-> [!IMPORTANT]
-> El ganador debe estar presente en el stream para recibir el premio.
+## Challenge
 
-![Razer Seiren Mini](./assets/sorteo.jpg)
-
-> En caso de no poder enviarse el premio, se pagará el equivalente de 70 USD.
-
-El deadline para enviar el PR es el 19 de Noviembre de 2024 a las 15:00hs Argentina (GMT -3).
-
-> [!IMPORTANT]
-> Los PRs se cerrarán luego de esa hora así que no te olvides de hacerlo antes.
+[Wallbit Challenge](/CHALLENGE.md)
